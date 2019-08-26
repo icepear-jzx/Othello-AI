@@ -248,12 +248,18 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            elif event.type == pygame.MOUSEBUTTONUP:
-                px, py = pygame.mouse.get_pos()
-                chessboard_new = setChess(chessboard, px, py)
-                if chessboard_new:
-                    chessboard = chessboard_new
-                    chessboards.append(chessboard)
+            else:
+                if event.type == pygame.MOUSEBUTTONUP:
+                    px, py = pygame.mouse.get_pos()
+                    chessboard_new = setChess(chessboard, px, py)
+                    if chessboard_new:
+                        chessboard = chessboard_new
+                        chessboards.append(chessboard)
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_b:
+                        if len(chessboards) > 1:
+                            chessboards.pop(-1)
+                            chessboard = chessboards[-1]
                 
                 # update screen
                 draw(screen, images, chessboard)
