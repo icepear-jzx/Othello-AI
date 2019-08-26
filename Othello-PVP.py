@@ -157,6 +157,11 @@ def setChess(chessboard, px, py):
         chessboard_new.updateStable()
         chessboard_new.updateCount()
 
+        if chessboard_new.count_available == 0:
+            chessboard_new.offense = 3 - chessboard_new.offense
+            chessboard_new.updateAvailable()
+            chessboard_new.updateCount()
+
     return chessboard_new
 
 
@@ -232,6 +237,9 @@ def main():
     chessboard = Chessboard()
     chessboards = [chessboard]
 
+    draw(screen, images, chessboard)
+    pygame.display.update()
+
     # main loop
     while True:
 
@@ -246,11 +254,10 @@ def main():
                 if chessboard_new:
                     chessboard = chessboard_new
                     chessboards.append(chessboard)
-
-        draw(screen, images, chessboard)
-
-        # update screen
-        pygame.display.update()
+                
+                # update screen
+                draw(screen, images, chessboard)
+                pygame.display.update()
 
 
 if __name__ == "__main__":
