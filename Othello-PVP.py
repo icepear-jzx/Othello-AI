@@ -71,7 +71,6 @@ def main():
                     if chessboard_new:
                         chessboard = chessboard_new
                         chessboards.append(chessboard)
-                        print(chessboard.count_stable_black, chessboard.count_stable_white)
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_b:
                         if len(chessboards) > 1:

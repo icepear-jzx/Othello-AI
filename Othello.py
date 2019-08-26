@@ -102,7 +102,6 @@ class Chessboard:
                                 count_stable_direction += 1
                         if count_stable_direction == 4:
                             find_new_stable_chess = True
-                            print('find stable', i, j)
                             self.stable[i][j] = 1
                         else:
                             if self.chesses[i][j] == 1:
