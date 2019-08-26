@@ -95,7 +95,27 @@ class Chessboard:
 
 
     def updateStable(self):
-        pass
+        directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
+        find_new_stable_chess = True
+        while find_new_stable_chess:
+            find_new_stable_chess = False
+            for i in range(self.row):
+                for j in range(self.col):
+                    if (self.chesses[i][j] == 1 or self.chesses[i][j] == 2) and not self.stable[i][j]:
+                        count_stable_direction = 0
+                        for dx, dy in directions:
+                            if not (0 <= i + dy < self.row) or not (0 <= j + dx < self.col) or \
+                            not (0 <= i - dy < self.row) or not (0 <= j - dx < self.col) or \
+                            (self.stable[i + dy][j + dx] and 
+                                self.chesses[i][j] == self.chesses[i + dy][j + dx]) or \
+                            (self.stable[i - dy][j - dx] and
+                                self.chesses[i][j] == self.chesses[i - dy][j - dx]) or \
+                            (self.stable[i + dy][j + dx] and self.stable[i - dy][j - dx]):
+                                count_stable_direction += 1
+                        if count_stable_direction == 4:
+                            find_new_stable_chess = True
+                            print('find stable', i, j)
+                            self.stable[i][j] = 1
 
 
     def updateCount(self):
@@ -109,9 +129,8 @@ class Chessboard:
                     self.count_black += 1
                 elif chess == -1:
                     self.count_available += 1
-                elif self.stable[i][j] == 1:
+                if self.stable[i][j] == 1:
                     self.count_stable += 1
-        print(self.count_stable, self.count_available)
 
 
 def setChess(chessboard, px, py):
@@ -122,7 +141,7 @@ def setChess(chessboard, px, py):
     chessboard_new = None
 
     if 0 <= set_i < chessboard.row and 0 <= set_j < chessboard.col and \
-                                chessboard.chesses[set_i][set_j] == -1:
+    chessboard.chesses[set_i][set_j] == -1:
         # deep copy to new chessboard
         chessboard_new = Chessboard()
         for i in range(chessboard.row):
@@ -223,8 +242,9 @@ def main():
                 exit()
             elif event.type == pygame.MOUSEBUTTONUP:
                 px, py = pygame.mouse.get_pos()
-                chessboard = setChess(chessboard, px, py)
-                if chessboard:
+                chessboard_new = setChess(chessboard, px, py)
+                if chessboard_new:
+                    chessboard = chessboard_new
                     chessboards.append(chessboard)
 
         draw(screen, images, chessboard)
