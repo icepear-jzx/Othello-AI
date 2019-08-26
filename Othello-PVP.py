@@ -218,12 +218,18 @@ def draw(screen, images, chessboard):
     textRectObj.center = (pos + images.width * 2, pos // 2 + images.width)
     screen.blit(textSurfaceObj, textRectObj)
 
+    # draw text
+    textSurfaceObj = fontObj.render("Press 'b' to undo", True, (0, 0, 0))
+    textRectObj = textSurfaceObj.get_rect()
+    textRectObj.center = (pos + 100, pos - 150)
+    screen.blit(textSurfaceObj, textRectObj)
+
 
 def main():
 
     # set parameters
     SCREEN_WIDTH = 1000
-    SCREEN_HEIGHT = 1000
+    SCREEN_HEIGHT = 680
 
     # init
     pygame.init()
