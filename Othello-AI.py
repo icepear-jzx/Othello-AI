@@ -34,12 +34,16 @@ def setChess(chessboard, px, py):
     return chessboard_new
 
 
+def setChessAI():
+    pass
+
 
 def main():
 
     # set parameters
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 680
+    player_color = 2 # black
 
     # init
     pygame.init()
@@ -66,11 +70,14 @@ def main():
                 exit()
             else:
                 if event.type == pygame.MOUSEBUTTONUP:
-                    px, py = pygame.mouse.get_pos()
-                    chessboard_new = setChess(chessboard, px, py)
-                    if chessboard_new:
-                        chessboard = chessboard_new
-                        chessboards.append(chessboard)
+                    if chessboard.offense == player_color:
+                        px, py = pygame.mouse.get_pos()
+                        chessboard_new = setChess(chessboard, px, py)
+                        if chessboard_new:
+                            chessboard = chessboard_new
+                            chessboards.append(chessboard)
+                    else:
+                        setChessAI()
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_b:
                         if len(chessboards) > 1:

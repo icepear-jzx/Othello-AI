@@ -89,22 +89,16 @@ class Chessboard:
     def updateStable(self):
         directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
         find_new_stable_chess = True
-        self.count_total_stable_direct_black = 0
-        self.count_total_stable_direct_white = 0
         while find_new_stable_chess:
             find_new_stable_chess = False
+            self.count_total_stable_direct_black = 0
+            self.count_total_stable_direct_white = 0
             for i in range(self.row):
                 for j in range(self.col):
                     if (self.chesses[i][j] == 1 or self.chesses[i][j] == 2) and not self.stable[i][j]:
                         count_stable_direction = 0
-                        for dx, dy in directions:
-                            if not (0 <= i + dy < self.row) or not (0 <= j + dx < self.col) or \
-                            not (0 <= i - dy < self.row) or not (0 <= j - dx < self.col) or \
-                            (self.stable[i + dy][j + dx] and 
-                                self.chesses[i][j] == self.chesses[i + dy][j + dx]) or \
-                            (self.stable[i - dy][j - dx] and
-                                self.chesses[i][j] == self.chesses[i - dy][j - dx]) or \
-                            (self.stable[i + dy][j + dx] and self.stable[i - dy][j - dx]):
+                        for direction in directions:
+                            if self.checkDirectionStable(i, j, direction):
                                 count_stable_direction += 1
                         if count_stable_direction == 4:
                             find_new_stable_chess = True
@@ -117,10 +111,49 @@ class Chessboard:
                                 self.count_total_stable_direct_black += count_stable_direction
 
 
+    def checkDirectionStable(self, i, j, direction):
+        directions = [direction, (-direction[0], -direction[1])]
+        color = self.chesses[i][j]
+        color_reverse = 3 - color
+        count_tmp = 0
+        for dx, dy in directions:
+            find_unstable_chess = False
+            checking_i = i + dy
+            checking_j = j + dx
+            while True:
+                if not (0 <= checking_i < self.row and 0 <= checking_j < self.col):
+                    if find_unstable_chess:
+                        count_tmp += 1
+                        break
+                    else:
+                        return True
+                if self.chesses[checking_i][checking_j] == color:
+                    if self.stable[checking_i][checking_j]:
+                        return True
+                    else:
+                        checking_i += dy
+                        checking_j += dx
+                        find_unstable_chess = True
+                elif self.chesses[checking_i][checking_j] == color_reverse:
+                    if self.stable[checking_i][checking_j]:
+                        count_tmp += 1
+                        break
+                    else:
+                        checking_i += dy
+                        checking_j += dx
+                        find_unstable_chess = True
+                else:
+                    break
+        if count_tmp == 2:
+            return True
+        else:
+            return False
+
+
     def updateCount(self):
         self.count_black = self.count_white = 0
         self.count_available = 0
-        self.count_stable_white = self.count_stable_white = 0
+        self.count_stable_white = self.count_stable_black = 0
         for i in range(self.row):
             for j in range(self.col):
                 chess = self.chesses[i][j]
