@@ -1,17 +1,6 @@
 import pygame
 
 
-class Images:
-
-    def __init__(self):
-        self.width = 50
-        self.background = pygame.image.load('images/background.gif')
-        self.black = pygame.image.load('images/black.gif')
-        self.white = pygame.image.load('images/white.gif')
-        self.available = pygame.image.load('images/available.gif')
-        self.blank = pygame.image.load('images/blank.gif')
-
-
 class Chessboard:
 
     def __init__(self):
@@ -32,7 +21,10 @@ class Chessboard:
         # init count
         self.count_black = self.count_white = 2
         self.count_available = 4
-        self.count_stable = 0
+        self.count_stable_black = 0
+        self.count_stable_white = 0
+        self.count_total_stable_direct_black = 0
+        self.count_total_stable_direct_white = 0
         # init available pos
         self.updateAvailable()
 
@@ -97,6 +89,8 @@ class Chessboard:
     def updateStable(self):
         directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
         find_new_stable_chess = True
+        self.count_total_stable_direct_black = 0
+        self.count_total_stable_direct_white = 0
         while find_new_stable_chess:
             find_new_stable_chess = False
             for i in range(self.row):
@@ -116,10 +110,17 @@ class Chessboard:
                             find_new_stable_chess = True
                             print('find stable', i, j)
                             self.stable[i][j] = 1
+                        else:
+                            if self.chesses[i][j] == 1:
+                                self.count_total_stable_direct_white += count_stable_direction
+                            elif self.chesses[i][j] == 2:
+                                self.count_total_stable_direct_black += count_stable_direction
 
 
     def updateCount(self):
-        self.count_black = self.count_white = self.count_available = self.count_stable = 0
+        self.count_black = self.count_white = 0
+        self.count_available = 0
+        self.count_stable_white = self.count_stable_white = 0
         for i in range(self.row):
             for j in range(self.col):
                 chess = self.chesses[i][j]
@@ -130,7 +131,21 @@ class Chessboard:
                 elif chess == -1:
                     self.count_available += 1
                 if self.stable[i][j] == 1:
-                    self.count_stable += 1
+                    if self.chesses[i][j] == 1:
+                        self.count_stable_white += 1
+                    elif self.chesses[i][j] == 2:
+                        self.count_stable_black += 1
+
+
+class Images:
+
+    def __init__(self):
+        self.width = 50
+        self.background = pygame.image.load('images/background.gif')
+        self.black = pygame.image.load('images/black.gif')
+        self.white = pygame.image.load('images/white.gif')
+        self.available = pygame.image.load('images/available.gif')
+        self.blank = pygame.image.load('images/blank.gif')
 
 
 def draw(screen, images, chessboard):
