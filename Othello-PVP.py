@@ -5,11 +5,11 @@ class Images:
 
     def __init__(self):
         self.width = 50
-        self.background = pygame.image.load('background.gif')
-        self.black = pygame.image.load('black.gif')
-        self.white = pygame.image.load('white.gif')
-        self.available = pygame.image.load('available.gif')
-        self.blank = pygame.image.load('blank.gif')
+        self.background = pygame.image.load('images/background.gif')
+        self.black = pygame.image.load('images/black.gif')
+        self.white = pygame.image.load('images/white.gif')
+        self.available = pygame.image.load('images/available.gif')
+        self.blank = pygame.image.load('images/blank.gif')
 
 
 class Chessboard:
