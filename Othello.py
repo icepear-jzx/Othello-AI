@@ -26,6 +26,7 @@ class Chessboard:
         self.count_total_stable_direct_black = 0
         self.count_total_stable_direct_white = 0
         # init available pos
+        self.available = []
         self.updateAvailable()
 
 
@@ -35,6 +36,7 @@ class Chessboard:
         color = self.offense
         color_reverse = 3 - color
         # clear available pos
+        self.available = []
         for i in range(self.row):
             for j in range(self.col):
                 if self.chesses[i][j] == -1:
@@ -55,6 +57,7 @@ class Chessboard:
                                 find_one_reverse_color = True
                             elif chess == 0 and find_one_reverse_color:
                                 self.chesses[checking_i][checking_j] = -1
+                                self.available.append((checking_i, checking_j))
                                 break
                             else:
                                 break
@@ -167,6 +170,52 @@ class Chessboard:
                         self.count_stable_white += 1
                     elif self.chesses[i][j] == 2:
                         self.count_stable_black += 1
+    
+
+    def copy(self):
+        chessboard_new = Chessboard()
+        chessboard_new.offense = self.offense
+        chessboard_new.available = [item for item in self.available]
+        for i in range(self.row):
+            for j in range(self.col):
+                chessboard_new.chesses[i][j] = self.chesses[i][j]
+                chessboard_new.stable[i][j] = self.stable[i][j]
+        chessboard_new.count_black = self.count_black
+        chessboard_new.count_white = self.count_white
+        chessboard_new.count_available = self.count_available
+        chessboard_new.count_stable_black = self.count_stable_black
+        chessboard_new.count_stable_white = self.count_stable_white
+        chessboard_new.count_total_stable_direct_black = self.count_total_stable_direct_black
+        chessboard_new.count_total_stable_direct_white = self.count_total_stable_direct_white
+        return chessboard_new
+
+
+def setChess(chessboard, px, py):
+
+    set_i = (py - chessboard.margin) // chessboard.width
+    set_j = (px - chessboard.margin) // chessboard.width
+
+    chessboard_new = None
+
+    if 0 <= set_i < chessboard.row and 0 <= set_j < chessboard.col and \
+    chessboard.chesses[set_i][set_j] == -1:
+        # deep copy to new chessboard
+        chessboard_new = chessboard.copy()
+        # set chess
+        chessboard_new.chesses[set_i][set_j] = chessboard.offense
+        chessboard_new.offense = 3 - chessboard.offense
+        # update
+        chessboard_new.reverse(set_i, set_j)
+        chessboard_new.updateAvailable()
+        chessboard_new.updateStable()
+        chessboard_new.updateCount()
+
+        if chessboard_new.count_available == 0:
+            chessboard_new.offense = 3 - chessboard_new.offense
+            chessboard_new.updateAvailable()
+            chessboard_new.updateCount()
+
+    return chessboard_new
 
 
 class Images:
