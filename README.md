@@ -23,5 +23,7 @@ $ python3 Othello-AI.py
 ```
 
 You are the black player. Black first.
+
 Then click anywhere, AI will put down a chess.
+
 Press 'b' to undo one step.
