@@ -19,7 +19,7 @@ class ChessboardTree:
     def __init__(self, node):
         self.root = node
         # self.expandLayer >= 2
-        self.expandLayer = 3
+        self.expandLayer = 4
     
 
     # expand self.expandLayer layers using BFS
@@ -39,6 +39,7 @@ class ChessboardTree:
                         node.kids[(i, j)] = node_new
                         node_new.parent = node
                         BFS_list_next.append(node_new)
+            print(len(BFS_list))
             BFS_list = BFS_list_next
             BFS_list_next = []
     
@@ -48,12 +49,14 @@ class ChessboardTree:
         for key in self.root.kids:
             scores.update({key: self.MaxMin(self.root.kids[key], 
                 player_color, self.expandLayer - 1)})
+        if not scores:
+            return (-1, -1)
+        min_key = min(scores, key=scores.get)
+        max_key = max(scores, key=scores.get)
+        # print(scores[min_key], scores[max_key])
         if self.root.chessboard.offense == player_color:
-            min_key = min(scores, key=scores.get)
             return min_key
         else:
-            max_key = max(scores, key=scores.get)
-            print(scores[max_key])
             return max_key
         
 
@@ -144,10 +147,11 @@ def main():
                 if (set_i, set_j) in chessboard.available:
                     chessboardTree.root = chessboardTree.root.kids[(set_i, set_j)]
                     chessboard = chessboardTree.root.chessboard
+                    # update screen
+                    draw(screen, images, chessboard)
+                    pygame.display.update()
+                    # expand tree
                     chessboardTree.expandTree()
-                # update screen
-                draw(screen, images, chessboard)
-                pygame.display.update()
 
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_b:
