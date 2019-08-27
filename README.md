@@ -4,8 +4,24 @@
 
 ## Usage
 
-At first, you need to install tkinter.
+At first, you need to install pygame.
 
 ```shell
-$ sudo apt-get install python3-tk
+$ pip3 install pygame --user
 ```
+
+You can play with your friend by running Othello-PVP.py.
+
+```shell
+$ python3 Othello-PVP.py
+```
+
+You can play against AI by running Othello-AI.py.
+
+```shell
+$ python3 Othello-AI.py
+```
+
+You are the black player. Black first.
+Then click anywhere, AI will put down a chess.
+Press 'b' to undo one step.

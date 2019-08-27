@@ -58,7 +58,7 @@ class ChessboardTree:
         
 
     def MaxMin(self, node, player_color, layer):
-        if layer:
+        if layer and node.kids:
             scores = {}
             for key in node.kids:
                 scores.update({key: self.MaxMin(node.kids[key], player_color, layer - 1)})
