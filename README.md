@@ -16,10 +16,13 @@ You can play with your friend by running Othello-PVP.py.
 $ python3 Othello-PVP.py
 ```
 
-You can play against AI by running Othello-AI.py.
+You can play against AI by running Othello-AI.py or Othello-AI-Pruning.py.
+
+Othello-AI-Pruning.py is more difficult than Othello-AI.py.
 
 ```shell
 $ python3 Othello-AI.py
+$ python3 Othello-AI-Pruning.py
 ```
 
 You are the black player. Black first.
