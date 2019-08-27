@@ -18,43 +18,61 @@ class ChessboardTree:
 
     def __init__(self, node):
         self.root = node
-        # self.expandLayer >= 1
-        # the first expansion will expand self.expandLayer layers
-        # then self.exapndLayer will be set to 1
-        # so that the prediction is always ahead of current chessboard for 
-        # self.expandLayer layers
-        self.expandLayer = 3
+        # self.fullLayer >= 1
+        self.fullLayer = 3
         self.greedyNum = 0
     
 
     # expand self.expandLayer layers using BFS
     # then expand greedily for self.greedyNum nodes
     def expandTree(self):
-        BFS_list = []
+        BFS_list = [self.root]
         BFS_list_next = []
-        self.DFS(self.root, BFS_list)
         # expand layer
-        for _ in range(self.expandLayer):
+        for _ in range(self.fullLayer):
             for node in BFS_list:
-                for i, j in node.chessboard.available:
-                    chessboard_new = setChessAI(node.chessboard, i ,j)
-                    node_new = ChessboardTreeNode(chessboard_new)
-                    node.kids[(i, j)] = node_new
-                    BFS_list_next.append(node_new)
+                if node.kids:
+                    for key in node.kids:
+                        BFS_list_next.append(node.kids[key])
+                else:
+                    for i, j in node.chessboard.available:
+                        chessboard_new = setChessAI(node.chessboard, i ,j)
+                        node_new = ChessboardTreeNode(chessboard_new)
+                        node.kids[(i, j)] = node_new
+                        node_new.parent = node
+                        BFS_list_next.append(node_new)
             BFS_list = BFS_list_next
             BFS_list_next = []
-        self.expandLayer = 1
         # print(len(BFS_list))
         # expand greedily
         # BFS_list.sort()
-        
     
-    def DFS(self, node, BFS_list):
-        if node.kids:
-            for key in node.kids:
-                self.DFS(node.kids[key], BFS_list)
+
+    def findBestChess(self, player_color):
+        scores = {}
+        for key in self.root.kids:
+            scores.update({key: self.MaxMin(self.root.kids[key], player_color)})
+        if self.root.chessboard.offense == player_color:
+            min_key = min(scores, key=scores.get)
+            return min_key
         else:
-            BFS_list.append(node)
+            max_key = max(scores, key=scores.get)
+            return max_key
+        
+
+    def MaxMin(self, node, player_color):
+        if node.kids:
+            scores = {}
+            for key in node.kids:
+                scores.update({key: self.MaxMin(node.kids[key], player_color)})
+            if node.chessboard.offense == player_color:
+                min_key = min(scores, key=scores.get)
+                return scores[min_key]
+            else:
+                max_key = max(scores, key=scores.get)
+                return scores[max_key]
+        else:
+            return node.score
 
 
 def setChessAI(chessboard, set_i, set_j):
@@ -99,7 +117,6 @@ def main():
 
     # init chessboard
     chessboard = Chessboard()
-    chessboards = [chessboard]
 
     # init tree
     node = ChessboardTreeNode(chessboard)
@@ -119,23 +136,26 @@ def main():
                 exit()
 
             elif event.type == pygame.MOUSEBUTTONUP:
-                px, py = pygame.mouse.get_pos()
-                set_i = (py - chessboard.margin) // chessboard.width
-                set_j = (px - chessboard.margin) // chessboard.width
+                set_i = set_j = -1
+                if chessboard.offense == player_color:
+                    px, py = pygame.mouse.get_pos()
+                    set_i = (py - chessboard.margin) // chessboard.width
+                    set_j = (px - chessboard.margin) // chessboard.width
+                else:
+                    set_i, set_j = chessboardTree.findBestChess(player_color)
                 if (set_i, set_j) in chessboard.available:
                     chessboardTree.expandTree()
                     chessboardTree.root = chessboardTree.root.kids[(set_i, set_j)]
                     chessboard = chessboardTree.root.chessboard
-                        
                 # update screen
                 draw(screen, images, chessboard)
                 pygame.display.update()
 
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_b:
-                    if len(chessboards) > 1:
-                        chessboards.pop(-1)
-                        chessboard = chessboards[-1]
+                    if chessboardTree.root.parent:
+                        chessboardTree.root = chessboardTree.root.parent
+                        chessboard = chessboardTree.root.chessboard
                 # update screen
                 draw(screen, images, chessboard)
                 pygame.display.update()
@@ -143,3 +163,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
