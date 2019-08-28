@@ -1,6 +1,6 @@
 # Othello-AI
 
-> An implementation of the game Othello(Reversi) using pygame including AI with Min-Max Algorithm.
+> An implementation of the game Othello(Reversi) using pygame including AI with Min-Max Algorithm and Alpha-Beta Pruning.
 
 ## Usage
 
