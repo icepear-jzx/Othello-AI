@@ -19,7 +19,7 @@ class ChessboardTree:
     def __init__(self, node):
         self.root = node
         # self.expandLayer >= 2
-        self.expandLayer = 2
+        self.expandLayer = 3
     
 
     # expand self.expandLayer layers using BFS

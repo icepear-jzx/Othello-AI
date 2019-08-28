@@ -9,7 +9,11 @@ class ChessboardTreeNode:
         # self.kids: {(i, j): node}
         self.kids = {}
         self.chessboard = chessboard
-        self.score = 100 * (chessboard.count_stable_white - chessboard.count_stable_black) \
+    
+
+    def getScore(self):
+        chessboard = self.chessboard
+        return 100 * (chessboard.count_stable_white - chessboard.count_stable_black) \
             + (chessboard.count_total_stable_direct_white 
             - chessboard.count_total_stable_direct_black)
 
@@ -92,8 +96,11 @@ class ChessboardTree:
                 # print('layer:', layer, 'max:', alpha, 'pruning:', pruning_flag)
                 return alpha
         else:
+            node.chessboard.updateStable()
+            node.chessboard.updateCount()
+            score = node.getScore()
             # print('layer:', layer, 'leaf:', node.score)
-            return node.score
+            return score
 
 
 def setChessAI(chessboard, set_i, set_j):
@@ -110,13 +117,13 @@ def setChessAI(chessboard, set_i, set_j):
         # update
         chessboard_new.reverse(set_i, set_j)
         chessboard_new.updateAvailable()
-        chessboard_new.updateStable()
+        # chessboard_new.updateStable()
         chessboard_new.updateCount()
 
         if chessboard_new.count_available == 0:
             chessboard_new.offense = 3 - chessboard_new.offense
             chessboard_new.updateAvailable()
-            chessboard_new.updateCount()
+            # chessboard_new.updateCount()
 
     return chessboard_new
 
