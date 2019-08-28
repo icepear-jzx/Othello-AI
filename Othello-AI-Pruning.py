@@ -19,7 +19,7 @@ class ChessboardTree:
     def __init__(self, node):
         self.root = node
         # self.expandLayer >= 2
-        self.expandLayer = 5
+        self.expandLayer = 4
     
 
     # expand only 1 layer
@@ -36,11 +36,13 @@ class ChessboardTree:
 
     def findBestChess(self, player_color):
         scores = {}
-        pruning_flag = -6400
+        alpha = -6400
         for key in self.root.kids:
             score = self.MaxMin(self.root.kids[key], player_color, 
-                self.expandLayer - 1, pruning_flag)
+                self.expandLayer - 1, alpha)
             scores.update({key: score})
+            if alpha < score:
+                alpha = score
         if not scores:
             return (-1, -1)
         max_key = max(scores, key=scores.get)
@@ -54,48 +56,43 @@ class ChessboardTree:
             # min layer
             if node.chessboard.offense == player_color:
                 beta = 6400
-                if node.kids:
-                    for key in node.kids:
-                        score = self.MaxMin(node.kids[key], player_color, layer - 1, beta)
-                        if score <= pruning_flag:
-                            return score
-                        if beta > score:
-                            beta = score
-                else:
-                    for i, j in node.chessboard.available:
+                for i, j in node.chessboard.available:
+                    if (i, j) in node.kids:
+                        score = self.MaxMin(node.kids[(i, j)], player_color, layer - 1, beta)
+                    else:
                         chessboard_new = setChessAI(node.chessboard, i ,j)
                         node_new = ChessboardTreeNode(chessboard_new)
                         node.kids[(i, j)] = node_new
                         node_new.parent = node
                         score = self.MaxMin(node_new, player_color, layer - 1, beta)
-                        if score <= pruning_flag:
-                            return score
-                        if beta > score:
-                            beta = score
+                    if score <= pruning_flag:
+                        beta = score
+                        break
+                    if beta > score:
+                        beta = score
+                # print('layer:', layer, 'min:', beta, 'pruning:', pruning_flag)
                 return beta
             # max layer
             else:
                 alpha = -6400
-                if node.kids:
-                    for key in node.kids:
-                        score = self.MaxMin(node.kids[key], player_color, layer - 1, alpha)
-                        if score >= pruning_flag:
-                            return score
-                        if alpha < score:
-                            alpha = score
-                else:
-                    for i, j in node.chessboard.available:
+                for i, j in node.chessboard.available:
+                    if (i, j) in node.kids:
+                        score = self.MaxMin(node.kids[(i, j)], player_color, layer - 1, alpha)
+                    else:
                         chessboard_new = setChessAI(node.chessboard, i ,j)
                         node_new = ChessboardTreeNode(chessboard_new)
                         node.kids[(i, j)] = node_new
                         node_new.parent = node
                         score = self.MaxMin(node_new, player_color, layer - 1, alpha)
-                        if score >= pruning_flag:
-                            return score
-                        if alpha < score:
-                            alpha = score
+                    if score >= pruning_flag:
+                        alpha = score
+                        break
+                    if alpha < score:
+                        alpha = score
+                # print('layer:', layer, 'max:', alpha, 'pruning:', pruning_flag)
                 return alpha
         else:
+            # print('layer:', layer, 'leaf:', node.score)
             return node.score
 
 

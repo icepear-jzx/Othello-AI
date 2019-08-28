@@ -19,7 +19,7 @@ class ChessboardTree:
     def __init__(self, node):
         self.root = node
         # self.expandLayer >= 2
-        self.expandLayer = 4
+        self.expandLayer = 2
     
 
     # expand self.expandLayer layers using BFS
@@ -52,7 +52,7 @@ class ChessboardTree:
             return (-1, -1)
         min_key = min(scores, key=scores.get)
         max_key = max(scores, key=scores.get)
-        # print(scores[min_key], scores[max_key])
+        print(scores[min_key], scores[max_key])
         if self.root.chessboard.offense == player_color:
             return min_key
         else:
@@ -66,11 +66,14 @@ class ChessboardTree:
                 scores.update({key: self.MaxMin(node.kids[key], player_color, layer - 1)})
             if node.chessboard.offense == player_color:
                 min_key = min(scores, key=scores.get)
+                # print('layer:', layer, 'min:', scores[min_key])
                 return scores[min_key]
             else:
                 max_key = max(scores, key=scores.get)
+                # print('layer:', layer, 'max:', scores[max_key])
                 return scores[max_key]
         else:
+            # print('layer:', layer, 'leaf:', node.score)
             return node.score
 
 
