@@ -57,12 +57,14 @@ class Chessboard:
                                 find_one_reverse_color = True
                             elif chess == 0 and find_one_reverse_color:
                                 self.chesses[checking_i][checking_j] = -1
+                                # find available pos, add it into self.available
                                 self.available.append((checking_i, checking_j))
                                 break
                             else:
                                 break
 
 
+    # reverse chesses
     def reverse(self, set_i, set_j):
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0),
                       (1, 1), (-1, -1), (1, -1), (-1, 1)]
@@ -71,7 +73,6 @@ class Chessboard:
         for dx, dy in directions:
             checking_i = set_i + dy
             checking_j = set_j + dx
-            find_one_reverse_color = False
             while 0 <= checking_i < self.row and 0 <= checking_j < self.col:
                 chess = self.chesses[checking_i][checking_j]
                 if chess == color_reverse:

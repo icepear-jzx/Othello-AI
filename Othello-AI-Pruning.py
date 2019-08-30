@@ -23,7 +23,7 @@ class ChessboardTree:
     def __init__(self, node):
         self.root = node
         # self.expandLayer >= 2
-        self.expandLayer = 4
+        self.expandLayer = 5
     
 
     # expand only 1 layer
