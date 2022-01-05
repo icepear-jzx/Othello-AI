@@ -60,7 +60,7 @@ class ChessboardTree:
                         score = self.MaxMin(
                             node.kids[(i, j)], player_color, layer - 1, beta)
                     else:
-                        count += 1
+                        # count += 1
                         chessboard_new = setChessAI(node.chessboard, i, j)
                         node_new = ChessboardTreeNode(chessboard_new)
                         node.kids[(i, j)] = node_new
@@ -82,7 +82,7 @@ class ChessboardTree:
                         score = self.MaxMin(
                             node.kids[(i, j)], player_color, layer - 1, alpha)
                     else:
-                        count += 1
+                        # count += 1
                         chessboard_new = setChessAI(node.chessboard, i, j)
                         node_new = ChessboardTreeNode(chessboard_new)
                         node.kids[(i, j)] = node_new
